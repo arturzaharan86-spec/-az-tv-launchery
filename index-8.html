@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#090710">
+<title>AZ TV Launcher</title>
+<style>
+:root{--bg:#090710;--panel:#151020;--panel2:#1d1530;--purple:#9b5cff;--pink:#d45cff;--muted:#a99dbb;--white:#f7f2ff}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:radial-gradient(ellipse at 78% 12%,#2b1450 0,transparent 34%),radial-gradient(ellipse at 12% 90%,#20113b 0,transparent 38%),var(--bg);color:var(--white);font-family:Arial,Helvetica,sans-serif}
+body{padding:4.2vh 5vw}
+.shell{height:100%;display:flex;flex-direction:column;gap:3.2vh}
+header{display:flex;justify-content:space-between;align-items:flex-start}
+.brand{font-size:clamp(26px,3vw,48px);font-weight:900;letter-spacing:.08em}
+.brand span{color:var(--purple);text-shadow:0 0 22px #9b5cff88}
+.tag{margin-top:7px;color:var(--muted);font-size:clamp(11px,1vw,15px);letter-spacing:.22em;text-transform:uppercase}
+.clock{text-align:right}
+#time{font-size:clamp(30px,4vw,58px);font-weight:700;letter-spacing:.03em}
+#date{color:var(--muted);font-size:clamp(12px,1.15vw,17px);margin-top:3px}
+.hero{display:flex;align-items:center;justify-content:space-between;gap:25px;min-height:17vh;padding:2.3vh 2.7vw;border:1px solid #8e59d344;border-radius:24px;background:linear-gradient(110deg,#241638dd,#151020dd 65%,#281443bb);box-shadow:0 16px 55px #0008,inset 0 1px #ffffff0c}
+.hero-copy small{color:#c9a8ff;letter-spacing:.22em;text-transform:uppercase;font-weight:bold}
+.hero h1{font-size:clamp(24px,3.2vw,48px);margin:9px 0 7px}
+.hero p{margin:0;color:var(--muted);font-size:clamp(12px,1.2vw,17px)}
+.hero-mark{font-size:clamp(58px,8vw,112px);font-weight:900;color:#a86cff;opacity:.9;text-shadow:0 0 42px #9b5cff88;padding:0 2vw}
+.section-head{display:flex;align-items:center;justify-content:space-between}
+.section-head h2{font-size:clamp(16px,1.5vw,22px);margin:0;letter-spacing:.04em}
+.hint{color:var(--muted);font-size:clamp(10px,.9vw,13px)}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1.4vw;flex:1;min-height:0}
+.tile{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:0;padding:1.7vw;border-radius:20px;border:1px solid #ffffff13;background:linear-gradient(145deg,#211a30,#120e1c);box-shadow:0 10px 28px #0005;outline:none;transition:transform .16s,border-color .16s,box-shadow .16s}
+.tile:focus,.tile.selected{transform:translateY(-5px) scale(1.025);border:2px solid #b77aff;box-shadow:0 0 0 3px #a45cff30,0 16px 40px #0009,0 0 30px #8e4bff33}
+.tile .icon{font-size:clamp(28px,3.5vw,52px);line-height:1}
+.tile strong{font-size:clamp(13px,1.35vw,20px)}
+.tile small{color:var(--muted);font-size:clamp(10px,.9vw,13px);margin-top:5px}
+.tile.add{border-style:dashed;background:#171020aa}
+footer{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:clamp(10px,.9vw,13px)}
+.key{display:inline-block;padding:4px 8px;border:1px solid #ffffff30;border-radius:6px;color:#eee;margin:0 3px}
+#toast{position:fixed;left:50%;bottom:5vh;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#251638;border:1px solid #a96bff88;padding:12px 18px;border-radius:12px;transition:.2s;font-size:14px}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+dialog{width:min(520px,88vw);border:1px solid #a96bff88;border-radius:18px;background:#171020;color:var(--white);padding:24px;box-shadow:0 25px 90px #000c}
+dialog::backdrop{background:#05030bcc}
+dialog h3{margin-top:0}
+input{width:100%;margin:7px 0 14px;padding:13px;border-radius:9px;border:1px solid #57416e;background:#0d0915;color:white;font-size:16px}
+.actions{display:flex;gap:10px;justify-content:flex-end}
+button{padding:11px 16px;border:0;border-radius:9px;background:#8f4ee8;color:white;font-weight:bold;font-size:14px}
+button.secondary{background:#352744;color:#eee}
+@media(max-width:850px){body{padding:3vh 3vw}.grid{grid-template-columns:repeat(3,1fr);gap:10px}.tile{padding:14px}.hero{min-height:14vh}.hero-mark{display:none}footer{gap:12px}.hint{display:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+  <div><div class="brand">AZ <span>TV</span></div><div class="tag">YOUR SMART SPACE</div></div>
+  <div class="clock"><div id="time">--:--</div><div id="date">Загрузка даты…</div></div>
+</header>
+<section class="hero">
+  <div class="hero-copy"><small>Добро пожаловать</small><h1>Твой экран. Твои правила.</h1><p>Быстрый доступ к любимым сервисам в одном месте.</p></div>
+  <div class="hero-mark">AZ</div>
+</section>
+<div class="section-head"><h2>ПРИЛОЖЕНИЯ</h2><div class="hint">Выбери карточку и нажми OK на пульте</div></div>
+<main class="grid" id="grid">
+  <a class="tile" href="https://www.youtube.com/tv" target="_blank" rel="noopener"><span class="icon">▶️</span><div><strong>YouTube</strong><br><small>Видео и каналы</small></div></a>
+  <a class="tile" href="https://www.netflix.com/" target="_blank" rel="noopener"><span class="icon">🎬</span><div><strong>Netflix</strong><br><small>Фильмы и сериалы</small></div></a>
+  <a class="tile" href="https://www.twitch.tv/" target="_blank" rel="noopener"><span class="icon">🟣</span><div><strong>Twitch</strong><br><small>Стримы</small></div></a>
+  <a class="tile" href="https://open.spotify.com/" target="_blank" rel="noopener"><span class="icon">🎵</span><div><strong>Spotify</strong><br><small>Музыка</small></div></a>
+  <a class="tile" href="https://www.google.com/" target="_blank" rel="noopener"><span class="icon">🔎</span><div><strong>Поиск</strong><br><small>Открыть Google</small></div></a>
+  <button class="tile add" id="addTile" type="button"><span class="icon">＋</span><div><strong>Добавить сайт</strong><br><small>Своя ссылка</small></div></button>
+</main>
+<footer><div><span class="key">←</span><span class="key">→</span><span class="key">↑</span><span class="key">↓</span> навигация <span class="key">OK</span> открыть</div><div>AZ TV LAUNCHER <span id="year"></span></div></footer>
+</div>
+<div id="toast"></div>
+<dialog id="addDialog">
+  <h3>Добавить сайт</h3>
+  <label>Название</label><input id="siteName" maxlength="22" placeholder="Например, Kinopoisk">
+  <label>Адрес сайта</label><input id="siteUrl" placeholder="https://example.com">
+  <div class="actions"><button class="secondary" id="cancelAdd">Отмена</button><button id="saveAdd">Добавить</button></div>
+</dialog>
+<script>
+const grid=document.getElementById('grid'), dialog=document.getElementById('addDialog');
+const toastEl=document.getElementById('toast');
+function toast(s){toastEl.textContent=s;toastEl.classList.add('show');setTimeout(()=>toastEl.classList.remove('show'),2400)}
+function updateClock(){
+ const now=new Date();
+ document.getElementById('time').textContent=now.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+ document.getElementById('date').textContent=now.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});
+ document.getElementById('year').textContent=now.getFullYear();
+}
+updateClock();setInterval(updateClock,15000);
+function loadCustom(){
+ let items=[];try{items=JSON.parse(localStorage.getItem('aztv-custom')||'[]')}catch(e){}
+ items.forEach(addCustomTile);
+}
+function addCustomTile(item){
+ const a=document.createElement('a');a.className='tile';a.href=item.url;a.target='_blank';a.rel='noopener';
+ const icon=document.createElement('span');icon.className='icon';icon.textContent='🌐';
+ const wrap=document.createElement('div'), strong=document.createElement('strong'), small=document.createElement('small');
+ strong.textContent=item.name;small.textContent='Мой сайт';wrap.append(strong,document.createElement('br'),small);a.append(icon,wrap);
+ grid.insertBefore(a,document.getElementById('addTile'));
+}
+document.getElementById('addTile').addEventListener('click',()=>dialog.showModal());
+document.getElementById('cancelAdd').addEventListener('click',()=>dialog.close());
+document.getElementById('saveAdd').addEventListener('click',()=>{
+ const name=document.getElementById('siteName').value.trim();
+ let url=document.getElementById('siteUrl').value.trim();
+ if(!name||!url){toast('Заполни оба поля');return}
+ if(!/^https?:\/\//i.test(url))url='https://'+url;
+ try{new URL(url)}catch(e){toast('Проверь адрес сайта');return}
+ let items=[];try{items=JSON.parse(localStorage.getItem('aztv-custom')||'[]')}catch(e){}
+ items.push({name,url});localStorage.setItem('aztv-custom',JSON.stringify(items));
+ addCustomTile({name,url});dialog.close();document.getElementById('siteName').value='';document.getElementById('siteUrl').value='';toast('Сайт добавлен');
+});
+function focusable(){return [...grid.querySelectorAll('.tile')]}
+document.addEventListener('keydown',e=>{
+ if(dialog.open)return;
+ const keys=['ArrowRight','ArrowLeft','ArrowUp','ArrowDown'];
+ if(!keys.includes(e.key))return;
+ e.preventDefault();
+ const list=focusable(), current=list.indexOf(document.activeElement);
+ let next=current<0?0:current, cols=window.innerWidth<=850?3:5;
+ if(e.key==='ArrowRight')next=Math.min(list.length-1,next+1);
+ if(e.key==='ArrowLeft')next=Math.max(0,next-1);
+ if(e.key==='ArrowDown')next=Math.min(list.length-1,next+cols);
+ if(e.key==='ArrowUp')next=Math.max(0,next-cols);
+ list[next]?.focus();
+});
+loadCustom();
+</script>
+</body></html>
